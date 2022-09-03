@@ -30,6 +30,8 @@ package com.mucheng.editor.component
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Paint
+import android.util.Log
 import com.mucheng.editor.base.AbstractComponent
 import com.mucheng.editor.base.AbstractTheme
 import com.mucheng.editor.base.layout.AbstractLayout
@@ -52,6 +54,7 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
         private set
 
     private val margin = editor.context.dp(5)
+    private val dividingLineWidth = editor.context.dp(2)
 
     protected lateinit var theme: AbstractTheme
 
@@ -72,6 +75,18 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
 
     val textSelectHandleEndParams = FloatArray(4)
 
+    open fun render(canvas: Canvas) {
+        remake()
+        renderBackgroundColor(canvas)
+        renderBackground(canvas)
+        renderTextSelectHandleBackground(canvas)
+        renderCodeText(canvas)
+        renderTextSelectHandle(canvas)
+        renderCursor(canvas)
+        renderLineNumberBackground(canvas)
+        renderLineNumber(canvas)
+    }
+
     private fun remake() {
         offsetX = margin * 2
         offsetY = 0f
@@ -84,6 +99,11 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
         painters.lineNumberPainter.color =
             theme.getColor(ThemeToken.LINE_NUMBER_COLOR_TOKEN).hexColor
 
+        painters.lineNumberBackgroundPainter.color =
+            theme.getColor(ThemeToken.BACKGROUND_COLOR_TOKEN).hexColor
+        painters.lineNumberDividingLinePainter.color =
+            theme.getColor(ThemeToken.LINE_NUMBER_DIVIDING_LINE_COLOR_TOKEN).hexColor
+
         if (!editor.animationManager.cursorAnimation.isRunning()) {
             painters.cursorPainter.color = theme.getColor(ThemeToken.CURSOR_COLOR_TOKEN).hexColor
         }
@@ -93,17 +113,6 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
 
         painters.textSelectHandlePainter.color =
             theme.getColor(ThemeToken.TEXT_SELECT_HANDLE_COLOR_TOKEN).hexColor
-    }
-
-    open fun render(canvas: Canvas) {
-        remake()
-        renderBackgroundColor(canvas)
-        renderBackground(canvas)
-        renderLineNumber(canvas)
-        renderTextSelectHandleBackground(canvas)
-        renderCodeText(canvas)
-        renderTextSelectHandle(canvas)
-        renderCursor(canvas)
     }
 
     protected open fun renderBackgroundColor(canvas: Canvas) {
@@ -135,171 +144,9 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
         )
     }
 
-    protected open fun renderLineNumber(canvas: Canvas) {
-        if (!editor.functionManager.isLineNumberEnabled) {
-            offsetX = 0f
-            leftToolbarWidth = 0f
-            return
-        }
-        val lineHeight = painters.getLineHeight()
-        var workLine = editor.getFirstVisibleLine()
-        val reachLine = editor.getLastVisibleLine()
-        val scrollingOffsetX = editor.getOffsetX()
-        val scrollingOffsetY = editor.getOffsetY()
-        while (workLine <= reachLine) {
-            canvas.drawText(
-                workLine.toString(), offsetX - scrollingOffsetX,
-                (lineHeight * workLine).toFloat() - scrollingOffsetY, painters.lineNumberPainter
-            )
-            ++workLine
-        }
-        offsetX += painters.lineNumberPainter.measureText(reachLine.toString())
-        leftToolbarWidth = offsetX + margin * 2
-    }
-
-    protected open fun renderCodeText(canvas: Canvas) {
-        val lineHeight = painters.getLineHeight()
-        var workLine = editor.getFirstVisibleLine()
-        val reachLine = editor.getLastVisibleLine()
-        val painter = painters.codeTextPainter
-        val scrollingOffsetX = editor.getOffsetX()
-        val scrollingOffsetY = editor.getOffsetY()
-        val languageManager = editor.languageManager
-        val styleManager = editor.styleManager
-        val language = languageManager.language
-        val spans = styleManager.spans
-
-        val x = offsetX - scrollingOffsetX
-
-
-        if (language.doSpan() && spans.isNotEmpty()) {
-            try {
-                while (workLine <= reachLine) {
-                    val textLineModel = textModel.getTextRow(workLine)
-                    val lineSpans = spans.getLineSpan(workLine)
-                    var offsetX = x
-                    val y = (workLine * lineHeight).toFloat() - scrollingOffsetY
-                    for (span in lineSpans) {
-                        painter.color = span.color.hexColor
-                        canvas.drawText(
-                            textLineModel,
-                            span.startRow,
-                            span.endRow,
-                            offsetX,
-                            y,
-                            painter
-                        )
-                        offsetX += layout.measureLineRow(workLine, span.startRow, span.endRow)
-                    }
-                    maxWidth = max(maxWidth, offsetX)
-                    ++workLine
-                }
-
-            } catch (e: IndexOutOfBoundsException) {
-                renderCodeTextBasic(canvas)
-            } catch (e: ConcurrentModificationException) {
-                renderCodeTextBasic(canvas)
-            }
-        } else {
-            renderCodeTextBasic(canvas)
-        }
-    }
-
-    protected open fun renderCodeTextBasic(canvas: Canvas) {
-        val lineHeight = painters.getLineHeight()
-        var workLine = editor.getFirstVisibleLine()
-        val reachLine = editor.getLastVisibleLine()
-        val painter = painters.codeTextPainter
-        val scrollingOffsetX = editor.getOffsetX()
-        val scrollingOffsetY = editor.getOffsetY()
-        val x = offsetX - scrollingOffsetX
-
-        painter.color = theme.getColor(ThemeToken.IDENTIFIER_COLOR_TOKEN).hexColor
-        try {
-            while (workLine <= reachLine) {
-                val textLineModel = textModel.getTextRow(workLine)
-                val y = (workLine * lineHeight).toFloat() - scrollingOffsetY
-
-                canvas.drawText(textLineModel, 0, textLineModel.length, x, y, painter)
-                maxWidth = max(maxWidth, layout.measureLineRow(workLine))
-                ++workLine
-            }
-        } catch (e: IndexOutOfBoundsException) {
-            renderCodeTextBasic(canvas)
-        }
-    }
-
-    protected open fun renderCursor(canvas: Canvas) {
-        if (!editor.isEnabled || !editor.functionManager.isEditable || editor.actionManager.selectingText) {
-            return
-        }
-        val cursor = editor.getCursor()
-        val lineHeight = painters.getLineHeight()
-        val painter = painters.cursorPainter
-        val visibleLineStart = editor.getFirstVisibleLine()
-        val visibleLineEnd = editor.getLastVisibleLine()
-        val scrollingOffsetX = editor.getOffsetX()
-        val scrollingOffsetY = editor.getOffsetY()
-        if (cursor.line < visibleLineStart || cursor.line > visibleLineEnd) {
-            return
-        }
-
-        val cursorAnimation = editor.animationManager.cursorAnimation
-        if (cursorAnimation.isRunning()) {
-            val animatedX = offsetX + cursorAnimation.animatedX() - scrollingOffsetX
-            val animatedY = cursorAnimation.animatedY()
-            val startY = animatedY - lineHeight / 1.5f - scrollingOffsetY
-            val endY = animatedY + lineHeight / 9 - scrollingOffsetY
-            canvas.drawLine(
-                animatedX,
-                startY,
-                animatedX,
-                endY,
-                painter
-            )
-            return
-        }
-
-        val cursorVisibleAnimation = editor.animationManager.cursorVisibleAnimation
-        if (cursorVisibleAnimation.isRunning()) {
-            if (!cursorVisibleAnimation.isVisible()) {
-                return
-            }
-        }
-
-        val cursorOffsetX = offsetX + getCursorOffsetX(cursor) - scrollingOffsetX
-        val cursorOffsetTopY = getCursorOffsetTopY(cursor)
-        val startY = cursorOffsetTopY - lineHeight / 1.5f - scrollingOffsetY
-        val endY = cursorOffsetTopY + lineHeight / 9 - scrollingOffsetY
-
-        canvas.drawLine(
-            cursorOffsetX,
-            startY,
-            cursorOffsetX,
-            endY,
-            painter
-        )
-    }
-
-    @Suppress("NOTHING_TO_INLINE")
-    private inline fun getCursorOffsetX(cursor: Cursor): Float {
-        if (cursor.row == 0) {
-            return 0f
-        }
-
-        return layout.measureLineRow(cursor.line, 0, cursor.row)
-    }
-
-    @Suppress("NOTHING_TO_INLINE")
-    private inline fun getCursorOffsetTopY(cursor: Cursor): Float {
-        return (painters.getLineHeight() * cursor.line).toFloat()
-    }
-
     protected open fun renderTextSelectHandleBackground(canvas: Canvas) {
+
         val actionManager = editor.actionManager
-        if (editor.functionManager.isLineNumberEnabled) {
-            offsetX += margin * 2
-        }
 
         if (!actionManager.selectingText) {
             return
@@ -316,11 +163,19 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
         val scrollingOffsetY = editor.getOffsetY()
         val painter = painters.textSelectHandleBackgroundPainter
 
+        if (editor.functionManager.isLineNumberEnabled) {
+            offsetX =
+                painters.lineNumberPainter.measureText(visibleLineEnd.toString()) + margin * 4 + dividingLineWidth
+        }
+
         val fontMetricsInt = painters.codeTextPainter.fontMetricsInt
         val fontMetricsOffset = fontMetricsInt.descent
         val realOffsetX = offsetX - scrollingOffsetX
         val realOffsetY = offsetY - scrollingOffsetY + fontMetricsOffset
         val lineHeight = painters.getLineHeight()
+
+
+
         if (startLine == endLine) {
             val startX = layout.measureLineRow(startLine, 0, startPos.row) + realOffsetX
             val startY = (startLine - 1) * lineHeight + realOffsetY
@@ -384,6 +239,80 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
         }
     }
 
+    protected open fun renderCodeText(canvas: Canvas) {
+        val lineHeight = painters.getLineHeight()
+        var workLine = editor.getFirstVisibleLine()
+        val reachLine = editor.getLastVisibleLine()
+        val painter = painters.codeTextPainter
+        val scrollingOffsetX = editor.getOffsetX()
+        val scrollingOffsetY = editor.getOffsetY()
+        val languageManager = editor.languageManager
+        val styleManager = editor.styleManager
+        val language = languageManager.language
+        val spans = styleManager.spans
+
+        offsetX =
+            painters.lineNumberPainter.measureText(reachLine.toString()) + margin * 2 + dividingLineWidth
+        var x = offsetX + margin * 2 - scrollingOffsetX
+
+        if (language.doSpan() && spans.isNotEmpty()) {
+            try {
+                while (workLine <= reachLine) {
+                    val textLineModel = textModel.getTextRow(workLine)
+                    val lineSpans = spans.getLineSpan(workLine)
+                    var offsetX = x
+                    val y = (workLine * lineHeight).toFloat() - scrollingOffsetY
+                    for (span in lineSpans) {
+                        painter.color = span.color.hexColor
+                        canvas.drawText(
+                            textLineModel,
+                            span.startRow,
+                            span.endRow,
+                            offsetX,
+                            y,
+                            painter
+                        )
+                        offsetX += layout.measureLineRow(workLine, span.startRow, span.endRow)
+                    }
+                    maxWidth = max(maxWidth, offsetX)
+                    ++workLine
+                }
+
+            } catch (e: IndexOutOfBoundsException) {
+                renderCodeTextBasic(canvas)
+            } catch (e: ConcurrentModificationException) {
+                renderCodeTextBasic(canvas)
+            }
+        } else {
+            renderCodeTextBasic(canvas)
+            Log.i("gg", "gg")
+        }
+    }
+
+    protected open fun renderCodeTextBasic(canvas: Canvas) {
+        val lineHeight = painters.getLineHeight()
+        var workLine = editor.getFirstVisibleLine()
+        val reachLine = editor.getLastVisibleLine()
+        val painter = painters.codeTextPainter
+        val scrollingOffsetX = editor.getOffsetX()
+        val scrollingOffsetY = editor.getOffsetY()
+        val x = offsetX - scrollingOffsetX
+
+        painter.color = theme.getColor(ThemeToken.IDENTIFIER_COLOR_TOKEN).hexColor
+        try {
+            while (workLine <= reachLine) {
+                val textLineModel = textModel.getTextRow(workLine)
+                val y = (workLine * lineHeight).toFloat() - scrollingOffsetY
+
+                canvas.drawText(textLineModel, 0, textLineModel.length, x, y, painter)
+                maxWidth = max(maxWidth, layout.measureLineRow(workLine))
+                ++workLine
+            }
+        } catch (e: IndexOutOfBoundsException) {
+            renderCodeTextBasic(canvas)
+        }
+    }
+
     protected open fun renderTextSelectHandle(canvas: Canvas) {
         val actionManager = editor.actionManager
         if (!actionManager.selectingText) {
@@ -398,6 +327,15 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
         val scrollingOffsetX = editor.getOffsetX()
         val scrollingOffsetY = editor.getOffsetY()
         val painter = painters.textSelectHandlePainter
+
+        if (editor.functionManager.isLineNumberEnabled) {
+            offsetX =
+                painters.lineNumberPainter.measureText(
+                    editor.getLastVisibleLine().toString()
+                ) + margin * 4 + dividingLineWidth
+
+            leftToolbarWidth = offsetX;
+        }
 
         val startX =
             offsetX + layout.measureLineRow(startPos.line, 0, startPos.row) - scrollingOffsetX
@@ -430,5 +368,124 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
         textSelectHandleEndParams[3] = textSelectHandle.endY
     }
 
+    protected open fun renderCursor(canvas: Canvas) {
+        if (!editor.isEnabled || !editor.functionManager.isEditable || editor.actionManager.selectingText) {
+            return
+        }
+        val cursor = editor.getCursor()
+        val lineHeight = painters.getLineHeight()
+        val painter = painters.cursorPainter
+        val visibleLineStart = editor.getFirstVisibleLine()
+        val visibleLineEnd = editor.getLastVisibleLine()
+        val scrollingOffsetX = editor.getOffsetX()
+        val scrollingOffsetY = editor.getOffsetY()
+        if (cursor.line < visibleLineStart || cursor.line > visibleLineEnd) {
+            return
+        }
 
+        if (editor.functionManager.isLineNumberEnabled) {
+            offsetX =
+                painters.lineNumberPainter.measureText(visibleLineEnd.toString()) + margin * 4 + dividingLineWidth
+        }
+
+        val cursorAnimation = editor.animationManager.cursorAnimation
+        if (cursorAnimation.isRunning()) {
+            val animatedX = offsetX + cursorAnimation.animatedX() - scrollingOffsetX
+            val animatedY = cursorAnimation.animatedY()
+            val startY = animatedY - lineHeight / 1.5f - scrollingOffsetY
+            val endY = animatedY + lineHeight / 9 - scrollingOffsetY
+            canvas.drawLine(
+                animatedX,
+                startY,
+                animatedX,
+                endY,
+                painter
+            )
+            return
+        }
+
+
+        val cursorVisibleAnimation = editor.animationManager.cursorVisibleAnimation
+        if (cursorVisibleAnimation.isRunning()) {
+            if (!cursorVisibleAnimation.isVisible()) {
+                return
+            }
+        }
+
+        val cursorOffsetX = offsetX + getCursorOffsetX(cursor) - scrollingOffsetX
+        val cursorOffsetTopY = getCursorOffsetTopY(cursor)
+        val startY = cursorOffsetTopY - lineHeight / 1.5f - scrollingOffsetY
+        val endY = cursorOffsetTopY + lineHeight / 9 - scrollingOffsetY
+
+        canvas.drawLine(
+            cursorOffsetX,
+            startY,
+            cursorOffsetX,
+            endY,
+            painter
+        )
+    }
+
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun getCursorOffsetX(cursor: Cursor): Float {
+        if (cursor.row == 0) {
+            return 0f
+        }
+
+        return layout.measureLineRow(cursor.line, 0, cursor.row)
+    }
+
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun getCursorOffsetTopY(cursor: Cursor): Float {
+        return (painters.getLineHeight() * cursor.line).toFloat()
+    }
+
+    protected open fun renderLineNumberBackground(canvas: Canvas) {
+        if (!editor.functionManager.isLineNumberEnabled) return
+        val lineHeight = painters.getLineHeight()
+        val reachLine = editor.getLastVisibleLine()
+
+        canvas.drawRect(
+            0f,
+            0f,
+            painters.lineNumberPainter.measureText(reachLine.toString()) + margin * 2,
+            lineHeight * (1 + reachLine).toFloat(),
+            painters.lineNumberBackgroundPainter
+        )
+
+        val newLeft = painters.lineNumberPainter.measureText(reachLine.toString()) + margin * 2
+        canvas.drawRect(
+            newLeft,
+            0f,
+            newLeft + dividingLineWidth,
+            lineHeight * (1 + reachLine).toFloat(),
+            painters.lineNumberDividingLinePainter
+        )
+    }
+
+    protected open fun renderLineNumber(canvas: Canvas) {
+        if (!editor.functionManager.isLineNumberEnabled) {
+            offsetX = 0f
+            leftToolbarWidth = 0f
+            return
+        }
+        val lineHeight = painters.getLineHeight()
+        var workLine = editor.getFirstVisibleLine()
+        val reachLine = editor.getLastVisibleLine()
+        val scrollingOffsetX = editor.getOffsetX()
+        val scrollingOffsetY = editor.getOffsetY()
+        while (workLine <= reachLine) {
+            canvas.drawText(
+//                workLine.toString(), offsetX - scrollingOffsetX,
+                workLine.toString(), painters.lineNumberPainter.measureText(
+                    reachLine.toString().drop(1)
+                ) + margin * 3,
+                (lineHeight * workLine).toFloat() - scrollingOffsetY,
+                painters.lineNumberPainter
+            )
+            ++workLine
+        }
+        offsetX += painters.lineNumberPainter.measureText(reachLine.toString())
+        leftToolbarWidth = offsetX + margin * 2
+    }
 }

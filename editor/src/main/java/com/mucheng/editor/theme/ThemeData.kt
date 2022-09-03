@@ -62,6 +62,9 @@ open class ThemeData {
             // 行号颜色
             put(com.mucheng.editor.token.ThemeToken.LINE_NUMBER_COLOR_TOKEN, Color("#FF000000"))
 
+            //行号分界线颜色
+            put(ThemeToken.LINE_NUMBER_DIVIDING_LINE_COLOR_TOKEN, Color("#FF6699FF"))
+
             // 选中文本的背景色
             put(
                 com.mucheng.editor.token.ThemeToken.TEXT_SELECT_HANDLE_BACKGROUND_COLOR_TOKEN,
@@ -79,6 +82,7 @@ open class ThemeData {
             // 注释的颜色
             put(com.mucheng.editor.token.ThemeToken.COMMENT_COLOR, Color("#FF586694"))
         }
+
         with(darkColors) {
             // 编辑器背景颜色
             put(com.mucheng.editor.token.ThemeToken.BACKGROUND_COLOR_TOKEN, Color("#FF1E1E1E"))
@@ -103,6 +107,9 @@ open class ThemeData {
 
             // 行号颜色
             put(com.mucheng.editor.token.ThemeToken.LINE_NUMBER_COLOR_TOKEN, Color("#FFA4ABCC"))
+
+            //行号分界线颜色
+            put(ThemeToken.LINE_NUMBER_DIVIDING_LINE_COLOR_TOKEN, Color("#FFFFFFFF"))
 
             // 选中文本的背景色
             put(

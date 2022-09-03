@@ -39,6 +39,9 @@ data class ThemeToken(val type: ThemeToken? = null, val name: String? = "") {
         val LINE_NUMBER_COLOR_TOKEN = ThemeToken(null, "Line-Number-Color-Token")
 
         @JvmStatic
+        val LINE_NUMBER_DIVIDING_LINE_COLOR_TOKEN = ThemeToken(null, "Line-Number-Color-Token")
+
+        @JvmStatic
         val CURSOR_COLOR_TOKEN = ThemeToken(null, "Cursor-Color-Token")
 
         @JvmStatic

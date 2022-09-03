@@ -710,6 +710,7 @@ open class MuCodeEditor @JvmOverloads constructor(
         val lineHeight = styleManager.painters.getLineHeight()
         val offsetY = line * lineHeight
         val offsetX = getLeftToolbarWidth() + layout.measureLineRow(line, 0, row)
+//        val offsetX = styleManager.painters.lineNumberPainter.measureText(visibleLineEnd.toString()) + margin * 4 + dividingLineWidth
         var targetX: Float = getOffsetX().toFloat()
         var targetY: Float = getOffsetY().toFloat()
 
