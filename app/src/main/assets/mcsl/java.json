@@ -1,0 +1,12 @@
+{
+  "Type": "MCSL",
+  "Comments": {
+    "singleComment": {
+      "startsWith": "//"
+    },
+    "multiComment": {
+      "startsWith": "/*",
+      "endsWith": "*/"
+    }
+  }
+}
