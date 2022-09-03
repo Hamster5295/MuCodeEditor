@@ -101,8 +101,8 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
         renderBackground(canvas)
         renderLineNumber(canvas)
         renderTextSelectHandleBackground(canvas)
-        renderTextSelectHandle(canvas)
         renderCodeText(canvas)
+        renderTextSelectHandle(canvas)
         renderCursor(canvas)
     }
 
