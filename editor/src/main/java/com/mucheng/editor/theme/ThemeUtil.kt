@@ -79,7 +79,7 @@ class ThemeUtil {
                 OutputStreamWriter(
                     context.openFileOutput(
                         "${theme.name}.json",
-                        Context.MODE_APPEND
+                        Context.MODE_PRIVATE
                     )
                 )
             )
