@@ -18,6 +18,9 @@
         tools:ignore="AlwaysShowAction,HardcodedText" />
 
     <item
+        android:id="@+id/editor_theme"
+        android:title="编辑主题(新)" />
+    <item
         android:title="光标动画"
         app:showAsAction="never"
         tools:ignore="HardcodedText">

@@ -4,10 +4,14 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/7c54ab48196a767061a6323f2bc75058/transformed/navigation-ui-2.3.5/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/7c54ab48196a767061a6323f2bc75058/transformed/navigation-ui-2.3.5/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/7c54ab48196a767061a6323f2bc75058/transformed/navigation-ui-2.3.5/AndroidManifest.xml" />
+      <root url="file://$PROJECT_DIR$/../../../../../Softwares/Java/Gradle/caches/transforms-3/87502a4512de1d851502e98280a68b45/transformed/navigation-ui-2.3.5/res" />
+      <root url="file://$PROJECT_DIR$/../../../../../Softwares/Java/Gradle/caches/transforms-3/87502a4512de1d851502e98280a68b45/transformed/navigation-ui-2.3.5/AndroidManifest.xml" />
+      <root url="jar://$PROJECT_DIR$/../../../../../Softwares/Java/Gradle/caches/transforms-3/87502a4512de1d851502e98280a68b45/transformed/navigation-ui-2.3.5/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.navigation/navigation-ui/2.3.5/c3b1c72fb42a6c6ea70970fa444614a2aaa64742/navigation-ui-2.3.5-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../Softwares/Java/Gradle/caches/modules-2/files-2.1/androidx.navigation/navigation-ui/2.3.5/c3b1c72fb42a6c6ea70970fa444614a2aaa64742/navigation-ui-2.3.5-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

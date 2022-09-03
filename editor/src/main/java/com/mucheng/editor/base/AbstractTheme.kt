@@ -71,7 +71,7 @@ abstract class AbstractTheme(val styleManager: EditorStyleManager) {
             if (insteadColor != null) {
                 return insteadColor as Color
             }
-            throw IllegalAccessException("In this theme, the theme token \"${token.name}\" has not a mapping color")
+            throw IllegalAccessException("In this theme, the theme token \"${token.name}\" doesn't have a mapping color")
         }
         return color
     }

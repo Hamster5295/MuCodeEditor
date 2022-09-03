@@ -48,6 +48,8 @@ import com.mucheng.editor.language.ecmascript.EcmaScriptLanguage
 import com.mucheng.editor.language.html.HtmlLanguage
 import com.mucheng.editor.language.php.PhpLanguage
 import com.mucheng.editor.sample.language.TextLanguage
+import com.mucheng.editor.theme.ThemeUtil
+import com.mucheng.editor.view.MuCodeEditor
 import com.mucheng.sample.databinding.ActivityMainBinding
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -60,6 +62,7 @@ class MainActivity : AppCompatActivity() {
 
         const val RESULT = 200
 
+        lateinit var editor: MuCodeEditor
     }
 
     private lateinit var viewBinding: ActivityMainBinding
@@ -78,11 +81,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(viewBinding.root)
         setSupportActionBar(viewBinding.toolbar)
 
-        val editor = viewBinding.editor
+        editor = viewBinding.editor
         editor.styleManager.setTypeface(
             Typeface.createFromAsset(
                 assets,
                 "font/HarmonyOS-Sans-Regular.ttf"
+            )
+        )
+        editor.styleManager.replaceTheme(
+            ThemeUtil.getThemeByFileName(
+                editor.styleManager,
+                "default.json",
+                this
             )
         )
         editor.languageManager.setLanguage(EcmaScriptLanguage.getInstance())
@@ -223,6 +233,10 @@ class MainActivity : AppCompatActivity() {
                 editor.functionManager.setEditEnabled(!editor.functionManager.isEditable)
                 editor.hideSoftInput()
                 editor.invalidate()
+            }
+
+            R.id.editor_theme -> {
+                startActivity(Intent(this, ThemeEditActivity::class.java))
             }
 
             R.id.action_instance_ecmascript -> {
