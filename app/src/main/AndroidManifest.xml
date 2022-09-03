@@ -21,7 +21,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MuCodeEditor"
         tools:targetApi="31">
-
+        <activity
+            android:name=".ThemeEditActivity"
+            android:exported="false" />
         <activity
             android:name=".SplashActivity"
             android:exported="true"
@@ -30,16 +32,13 @@
             tools:ignore="RedundantLabel">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".MainActivity" />
-
-        <activity android:name=".FileSelectorActivity"/>
-
+        <activity android:name=".FileSelectorActivity" />
         <activity android:name=".CrashReportActivity" />
-
     </application>
 
 </manifest>
