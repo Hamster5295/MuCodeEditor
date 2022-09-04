@@ -79,6 +79,7 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
         remake()
         renderBackgroundColor(canvas)
         renderBackground(canvas)
+
         renderTextSelectHandleBackground(canvas)
         renderCodeText(canvas)
         renderTextSelectHandle(canvas)
@@ -95,6 +96,21 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
         painters = editor.styleManager.painters
         textModel = editor.getText()
         layout = editor.layout
+
+        /* 在此确定代码区域的offsetX
+        * 此处先于LineNumber的渲染确定，以控制Handle和CodeText的正常渲染
+        */
+        if (editor.functionManager.isLineNumberEnabled) {
+            offsetX =
+                painters.lineNumberPainter.measureText(
+                    editor.getLastVisibleLine().toString()
+                ) + margin * 4 + dividingLineWidth
+
+            leftToolbarWidth = offsetX;
+        } else {
+            offsetX = 0f
+            leftToolbarWidth = 0f
+        }
 
         painters.lineNumberPainter.color =
             theme.getColor(ThemeToken.LINE_NUMBER_COLOR_TOKEN).hexColor
@@ -162,19 +178,11 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
         val scrollingOffsetX = editor.getOffsetX()
         val scrollingOffsetY = editor.getOffsetY()
         val painter = painters.textSelectHandleBackgroundPainter
-
-        if (editor.functionManager.isLineNumberEnabled) {
-            offsetX =
-                painters.lineNumberPainter.measureText(visibleLineEnd.toString()) + margin * 4 + dividingLineWidth
-        }
-
         val fontMetricsInt = painters.codeTextPainter.fontMetricsInt
         val fontMetricsOffset = fontMetricsInt.descent
         val realOffsetX = offsetX - scrollingOffsetX
         val realOffsetY = offsetY - scrollingOffsetY + fontMetricsOffset
         val lineHeight = painters.getLineHeight()
-
-
 
         if (startLine == endLine) {
             val startX = layout.measureLineRow(startLine, 0, startPos.row) + realOffsetX
@@ -251,9 +259,7 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
         val language = languageManager.language
         val spans = styleManager.spans
 
-        offsetX =
-            painters.lineNumberPainter.measureText(reachLine.toString()) + margin * 2 + dividingLineWidth
-        var x = offsetX + margin * 2 - scrollingOffsetX
+        val x = offsetX - scrollingOffsetX
 
         if (language.doSpan() && spans.isNotEmpty()) {
             try {
@@ -328,15 +334,6 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
         val scrollingOffsetY = editor.getOffsetY()
         val painter = painters.textSelectHandlePainter
 
-        if (editor.functionManager.isLineNumberEnabled) {
-            offsetX =
-                painters.lineNumberPainter.measureText(
-                    editor.getLastVisibleLine().toString()
-                ) + margin * 4 + dividingLineWidth
-
-            leftToolbarWidth = offsetX;
-        }
-
         val startX =
             offsetX + layout.measureLineRow(startPos.line, 0, startPos.row) - scrollingOffsetX
         val startY = startPos.line * lineHeight.toFloat() - scrollingOffsetY
@@ -381,11 +378,6 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
         val scrollingOffsetY = editor.getOffsetY()
         if (cursor.line < visibleLineStart || cursor.line > visibleLineEnd) {
             return
-        }
-
-        if (editor.functionManager.isLineNumberEnabled) {
-            offsetX =
-                painters.lineNumberPainter.measureText(visibleLineEnd.toString()) + margin * 4 + dividingLineWidth
         }
 
         val cursorAnimation = editor.animationManager.cursorAnimation
@@ -464,11 +456,6 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
     }
 
     protected open fun renderLineNumber(canvas: Canvas) {
-        if (!editor.functionManager.isLineNumberEnabled) {
-            offsetX = 0f
-            leftToolbarWidth = 0f
-            return
-        }
         val lineHeight = painters.getLineHeight()
         var workLine = editor.getFirstVisibleLine()
         val reachLine = editor.getLastVisibleLine()
@@ -485,7 +472,5 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
             )
             ++workLine
         }
-        offsetX += painters.lineNumberPainter.measureText(reachLine.toString())
-        leftToolbarWidth = offsetX + margin * 2
     }
 }
