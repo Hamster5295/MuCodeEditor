@@ -76,7 +76,7 @@
                 <arg>$MODULE_DIR$/../../../../../../../../Softwares/Java/Gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.7.10/d2abf9e77736acc4450dc4a3f707fa2c10f5099d/kotlin-stdlib-1.7.10.jar</arg>
                 <arg>$MODULE_DIR$/../../../../../../../../Softwares/Java/Gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.7.10/bac80c520d0a9e3f3673bc2658c6ed02ef45a76a/kotlin-stdlib-common-1.7.10.jar</arg>
                 <arg>$MODULE_DIR$/../../../../../../../../Softwares/Java/Gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar</arg>
-                <arg>$MODULE_DIR$/../../../../../../../../Softwares/Java/Gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.8.9/8a432c1d6825781e21a02db2e2c33c5fde2833b9/gson-2.8.9.jar</arg>
+                <arg>$MODULE_DIR$/../../../../../../../../Softwares/Java/Gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.9.1/2cc2131b98ebfb04e2b2c7dfb84431f4045096b/gson-2.9.1.jar</arg>
                 <arg>$MODULE_DIR$/../../../../../../../../Softwares/Java/Gradle/caches/transforms-3/f14901d52ec9f1b23bf92b25a4355b02/transformed/annotation-experimental-1.1.0-api.jar</arg>
                 <arg>$MODULE_DIR$/../../../../../../../../Softwares/Java/Gradle/caches/modules-2/files-2.1/androidx.constraintlayout/constraintlayout-solver/2.0.4/1f001d7db280a89a6c26b26a66eb064bb6d5efeb/constraintlayout-solver-2.0.4.jar</arg>
                 <arg>$MODULE_DIR$/../../../../../../../../Softwares/Android/SDK/platforms/android-32/android.jar</arg>
@@ -152,7 +152,7 @@
     <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.7.10" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.10" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: com.google.code.gson:gson:2.8.9" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: com.google.code.gson:gson:2.9.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.arch.core:core-common:2.1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.collection:collection:1.1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.constraintlayout:constraintlayout-solver:2.0.4" level="project" />
