@@ -28,55 +28,140 @@
 
 package com.mucheng.sample
 
-import android.content.DialogInterface
-import android.graphics.drawable.Drawable
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.widget.TextView
-import android.widget.Toast
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.flask.colorpicker.ColorPickerView
-import com.flask.colorpicker.OnColorSelectedListener
-import com.flask.colorpicker.builder.ColorPickerClickListener
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.mucheng.editor.color.Color
 import com.mucheng.editor.theme.BaseTheme
 import com.mucheng.editor.theme.ThemeUtil
 import com.mucheng.editor.token.ThemeToken
+import com.mucheng.sample.adapter.ThemeEditAdapter
+import com.mucheng.sample.callback.ThemeEditCallback
+import com.mucheng.sample.data.ThemeItem
+import com.mucheng.sample.databinding.ActivityThemeEditBinding
 
 
 //此类仅作为演示使用，不怎么能实现正常功能
-class ThemeEditActivity : AppCompatActivity() {
+@Suppress("LocalVariableName")
+class ThemeEditActivity : AppCompatActivity(), ThemeEditCallback {
+
+    private lateinit var viewBinding: ActivityThemeEditBinding
+
+    private val themeItemList: MutableList<ThemeItem> = ArrayList()
+
+    private val adapter by lazy {
+        fetchThemeItemList()
+        ThemeEditAdapter(
+            this, MainActivity.editor.styleManager.theme, themeItemList
+        ).apply {
+            setThemeEditCallback(this@ThemeEditActivity)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_theme_edit)
+        viewBinding = ActivityThemeEditBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
 
-        //是的没错，这是一个被用作色块的Textview
-        val colorView1 = findViewById<TextView>(R.id.color_view_1);
-        val color_bg = findViewById<CardView>(R.id.color_bg);
-        color_bg.setOnClickListener {
-            ColorPickerDialogBuilder
-                .with(this)
-                .setTitle("Choose color")
-                .initialColor(MainActivity.editor.styleManager.theme.getColor(ThemeToken.BACKGROUND_COLOR_TOKEN).hexColor)
-                .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                .density(12)
-                .setPositiveButton(
-                    "ok"
-                ) { _, selectedColor, _ ->
-                    colorView1.setBackgroundColor(selectedColor)
-                    (MainActivity.editor.styleManager.theme as BaseTheme).setColor(
-                        ThemeToken.BACKGROUND_COLOR_TOKEN,
-                        Color(selectedColor)
-                    )
-
-                    ThemeUtil.saveTheme(MainActivity.editor.styleManager.theme as BaseTheme,this)
-                }
-                .setNegativeButton("cancel", DialogInterface.OnClickListener { _, _ -> })
-                .build()
-                .show()
+        val toolbar = viewBinding.toolbar
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
         }
 
-        colorView1.setBackgroundColor(MainActivity.editor.styleManager.theme.getColor(ThemeToken.BACKGROUND_COLOR_TOKEN).hexColor)
+        val recyclerView = viewBinding.recyclerView
+        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recyclerView.adapter = adapter
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_theme_edit, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+
+            R.id.reset_theme -> {
+                val editor = MainActivity.editor
+                val styleManager = editor.styleManager
+                val defaultTheme = ThemeUtil.getDefaultTheme(styleManager) as BaseTheme
+                styleManager.replaceTheme(defaultTheme)
+
+                ThemeUtil.saveTheme(defaultTheme, this)
+                fetchThemeItemList()
+                adapter.notifyDataSetChanged()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun fetchThemeItemList() {
+        themeItemList.clear()
+        themeItemList.addAll(
+            listOf(
+                getThemeItem("背景颜色", ThemeToken.BACKGROUND_COLOR_TOKEN),
+                getThemeItem("行号颜色", ThemeToken.LINE_NUMBER_COLOR_TOKEN),
+                getThemeItem("行号分割线颜色", ThemeToken.LINE_NUMBER_DIVIDING_LINE_COLOR_TOKEN),
+                getThemeItem("光标颜色", ThemeToken.CURSOR_COLOR_TOKEN),
+                getThemeItem("文本选中处理背景色", ThemeToken.TEXT_SELECT_HANDLE_BACKGROUND_COLOR_TOKEN),
+                getThemeItem("文本选中角标颜色", ThemeToken.TEXT_SELECT_HANDLE_COLOR_TOKEN),
+                getThemeItem("标识符颜色", ThemeToken.IDENTIFIER_COLOR_TOKEN),
+                getThemeItem("关键字颜色", ThemeToken.KEYWORD_COLOR),
+                getThemeItem("注释颜色", ThemeToken.COMMENT_COLOR),
+                getThemeItem("字符串颜色", ThemeToken.STRING_COLOR),
+                getThemeItem("符合颜色", ThemeToken.SYMBOL_COLOR),
+                getThemeItem("特殊值颜色", ThemeToken.SPECIAL_COLOR),
+                getThemeItem("数值颜色", ThemeToken.NUMERICAL_VALUE_COLOR)
+            )
+        )
+    }
+
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun getThemeItem(title: String, themeToken: ThemeToken): ThemeItem {
+        return ThemeItem(title, themeToken, MainActivity.editor.getTheme().getColor(themeToken))
+    }
+
+    private fun showColorSelectorDialog(themeItem: ThemeItem, position: Int) {
+        val themeToken = themeItem.themeToken
+        ColorPickerDialogBuilder
+            .with(this)
+            .setTitle("Choose color")
+            .initialColor(MainActivity.editor.styleManager.theme.getColor(themeToken).hexColor)
+            .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+            .density(12)
+            .setPositiveButton(
+                "ok"
+            ) { _, selectedColor, _ ->
+                val selectedColorInlined = Color(selectedColor)
+                themeItem.initColor = selectedColorInlined
+                (MainActivity.editor.styleManager.theme as BaseTheme).setColor(
+                    themeToken,
+                    selectedColorInlined
+                )
+
+                ThemeUtil.saveTheme(MainActivity.editor.styleManager.theme as BaseTheme, this)
+                adapter.notifyItemChanged(position)
+            }
+            .setNegativeButton("cancel", null)
+            .build()
+            .show()
+    }
+
+    override fun onThemeEdit(item: ThemeItem, position: Int) {
+        showColorSelectorDialog(item, position)
+    }
+
 }

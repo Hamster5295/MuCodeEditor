@@ -1,12 +1,12 @@
 <component name="libraryTable">
   <library name="Gradle: com.guolindev.permissionx:permissionx:1.6.4@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/de263803f861b26fa8a0f907c5e049d2/transformed/permissionx-1.6.4/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/de263803f861b26fa8a0f907c5e049d2/transformed/permissionx-1.6.4/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/de263803f861b26fa8a0f907c5e049d2/transformed/permissionx-1.6.4/AndroidManifest.xml" />
       <root url="jar://$PROJECT_DIR$/../../../../../Softwares/Java/Gradle/caches/transforms-3/ccef7b9132e82b562e4c4ddeb3f99072/transformed/permissionx-1.6.4/jars/classes.jar!/" />
       <root url="file://$PROJECT_DIR$/../../../../../Softwares/Java/Gradle/caches/transforms-3/ccef7b9132e82b562e4c4ddeb3f99072/transformed/permissionx-1.6.4/res" />
       <root url="file://$PROJECT_DIR$/../../../../../Softwares/Java/Gradle/caches/transforms-3/ccef7b9132e82b562e4c4ddeb3f99072/transformed/permissionx-1.6.4/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/77f5de9febc0db90fcac791f4ca089df/transformed/permissionx-1.6.4/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/77f5de9febc0db90fcac791f4ca089df/transformed/permissionx-1.6.4/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/77f5de9febc0db90fcac791f4ca089df/transformed/permissionx-1.6.4/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.guolindev.permissionx/permissionx/1.6.4/dd83bdea34e6e818a8b7d67a4e1375eb7afcb4c3/permissionx-1.6.4-javadoc.jar!/" />

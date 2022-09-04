@@ -1,16 +1,16 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.android.material:material:1.5.0-alpha04@aar">
     <ANNOTATIONS>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/20495192dfc1373761ea4d306fe73cdf/transformed/material-1.5.0-alpha04/annotations.zip!/" />
       <root url="jar://$PROJECT_DIR$/../../../../../Softwares/Java/Gradle/caches/transforms-3/b8722eb851271ab323182de4258588dd/transformed/material-1.5.0-alpha04/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/0dee37e7aac9d839845966450896a256/transformed/material-1.5.0-alpha04/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/20495192dfc1373761ea4d306fe73cdf/transformed/material-1.5.0-alpha04/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/20495192dfc1373761ea4d306fe73cdf/transformed/material-1.5.0-alpha04/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/20495192dfc1373761ea4d306fe73cdf/transformed/material-1.5.0-alpha04/AndroidManifest.xml" />
       <root url="file://$PROJECT_DIR$/../../../../../Softwares/Java/Gradle/caches/transforms-3/b8722eb851271ab323182de4258588dd/transformed/material-1.5.0-alpha04/AndroidManifest.xml" />
       <root url="jar://$PROJECT_DIR$/../../../../../Softwares/Java/Gradle/caches/transforms-3/b8722eb851271ab323182de4258588dd/transformed/material-1.5.0-alpha04/jars/classes.jar!/" />
       <root url="file://$PROJECT_DIR$/../../../../../Softwares/Java/Gradle/caches/transforms-3/b8722eb851271ab323182de4258588dd/transformed/material-1.5.0-alpha04/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/0dee37e7aac9d839845966450896a256/transformed/material-1.5.0-alpha04/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/0dee37e7aac9d839845966450896a256/transformed/material-1.5.0-alpha04/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/0dee37e7aac9d839845966450896a256/transformed/material-1.5.0-alpha04/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

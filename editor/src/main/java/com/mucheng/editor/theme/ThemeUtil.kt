@@ -30,63 +30,69 @@ package com.mucheng.editor.theme
 
 import android.content.Context
 import android.util.Log
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.mucheng.editor.base.AbstractTheme
 import com.mucheng.editor.manager.EditorStyleManager
 import java.io.*
 
-class ThemeUtil {
-    companion object {
+/**
+ * @author Hamster
+ *
+ * 主题常用类, 用于从本地拉取主题 & 保存主题
+ * */
+object ThemeUtil {
 
-        fun getDefaultTheme(styleManager: EditorStyleManager): AbstractTheme {
-            return MuTheme(styleManager);
-        }
+    fun getDefaultTheme(styleManager: EditorStyleManager): AbstractTheme {
+        return MuTheme(styleManager)
+    }
 
-        fun getThemeFiles(context: Context): List<String> {
-            val f = File(context.filesDir.absolutePath);
-            if (!f.exists()) return ArrayList<String>(0);
-            return ArrayList<String>(f.list().toList())
-        }
+    fun getThemeFiles(context: Context): List<String> {
+        val f = File(context.filesDir.absolutePath)
+        if (!f.exists()) return ArrayList(0)
 
-        //用这个之前记得调用getThemeFiles获取所有文件
-        fun getThemeByFileName(
-            styleManager: EditorStyleManager,
-            fileName: String,
-            context: Context
-        ): AbstractTheme {
-            if (!File(context.filesDir, fileName).exists()) {
-                //No theme named "name" present
-                Log.w(
-                    "MuCodeEditor",
-                    "Cannot find theme named $fileName, use default theme instead!"
-                );
-                return MuTheme(styleManager);
-            }
+        // 可能为空，如果为空返回 emptyList
+        return ArrayList<String>(f.list()?.toList() ?: emptyList())
+    }
 
-            var reader = BufferedReader(InputStreamReader(context.openFileInput(fileName)));
-            val data = GsonBuilder().enableComplexMapKeySerialization().create().fromJson(
-                reader.readLine(),
-                ThemeData::class.java
+    //用这个之前记得调用getThemeFiles获取所有文件
+    fun getThemeByFileName(
+        styleManager: EditorStyleManager,
+        fileName: String,
+        context: Context
+    ): AbstractTheme {
+        if (!File(context.filesDir, fileName).exists()) {
+            //No theme named "name" present
+            Log.w(
+                "MuCodeEditor",
+                "Cannot find theme named $fileName, use default theme instead!"
             )
-            reader.close()
-            //文件名去掉后缀".json"作为BaseTheme的Name
-            return BaseTheme(styleManager, fileName.dropLast(5), data);
+            return MuTheme(styleManager)
         }
 
-        fun saveTheme(theme: BaseTheme, context: Context) {
-            val writer = BufferedWriter(
-                OutputStreamWriter(
-                    context.openFileOutput(
-                        "${theme.name}.json",
-                        Context.MODE_PRIVATE
-                    )
+        val reader = BufferedReader(InputStreamReader(context.openFileInput(fileName)))
+        val data = GsonBuilder().enableComplexMapKeySerialization().create().fromJson(
+            reader.readLine(),
+            ThemeData::class.java
+        )
+        reader.close()
+
+        //文件名去掉后缀 ".json" 作为 BaseTheme 的 Name
+        return BaseTheme(styleManager, fileName.dropLast(5), data)
+    }
+
+    fun saveTheme(theme: BaseTheme, context: Context) {
+        val writer = BufferedWriter(
+            OutputStreamWriter(
+                context.openFileOutput(
+                    "${theme.name}.json",
+                    Context.MODE_PRIVATE
                 )
             )
-            writer.write(
-                GsonBuilder().enableComplexMapKeySerialization().create().toJson(theme.data)
-            )
-            writer.close()
-        }
+        )
+        writer.write(
+            GsonBuilder().enableComplexMapKeySerialization().create().toJson(theme.data)
+        )
+        writer.close()
     }
+
 }
