@@ -28,8 +28,10 @@
 
 package com.mucheng.editor.component
 
+import android.graphics.Color
 import android.graphics.Paint
 import com.mucheng.editor.base.AbstractComponent
+import com.mucheng.editor.token.ThemeToken
 import com.mucheng.editor.tool.dp
 import com.mucheng.editor.tool.sp
 import com.mucheng.editor.view.MuCodeEditor
@@ -57,7 +59,11 @@ open class Painters(editor: MuCodeEditor) : AbstractComponent(editor) {
         letterSpacing = 0.04f
         isAntiAlias = true
         isSubpixelText = true
+        textAlign = Paint.Align.RIGHT
     }
+
+    open val lineNumberBackgroundPainter = Paint()
+    open val lineNumberDividingLinePainter = Paint()
 
     open val codeTextPainter = Paint().apply {
         textSize = 19.sp
