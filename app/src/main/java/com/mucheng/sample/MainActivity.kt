@@ -48,6 +48,7 @@ import com.mucheng.editor.language.ecmascript.EcmaScriptLanguage
 import com.mucheng.editor.language.html.HtmlLanguage
 import com.mucheng.editor.language.php.PhpLanguage
 import com.mucheng.editor.sample.language.TextLanguage
+import com.mucheng.editor.theme.MuTheme
 import com.mucheng.editor.theme.ThemeUtil
 import com.mucheng.editor.view.MuCodeEditor
 import com.mucheng.sample.databinding.ActivityMainBinding
@@ -236,7 +237,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.editor_theme -> {
-                startActivity(Intent(this, ThemeEditActivity::class.java))
+                editor.styleManager.replaceTheme(MuTheme(editor.styleManager))
             }
 
             R.id.action_instance_ecmascript -> {

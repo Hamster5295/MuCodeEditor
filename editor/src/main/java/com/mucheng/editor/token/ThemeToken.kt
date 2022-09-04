@@ -39,7 +39,12 @@ data class ThemeToken(val type: ThemeToken? = null, val name: String? = "") {
         val LINE_NUMBER_COLOR_TOKEN = ThemeToken(null, "Line-Number-Color-Token")
 
         @JvmStatic
-        val LINE_NUMBER_DIVIDING_LINE_COLOR_TOKEN = ThemeToken(null, "Line-Number-Dividing-Line-Color-Token")
+        val LINE_NUMBER_BACKGROUND_COLOR_TOKEN =
+            ThemeToken(null, "Line-Number-Background-Color-Token")
+
+        @JvmStatic
+        val LINE_NUMBER_DIVIDING_LINE_COLOR_TOKEN =
+            ThemeToken(null, "Line-Number-Dividing-Line-Color-Token")
 
         @JvmStatic
         val LINE_HIGHLIGHT_COLOR_TOKEN = ThemeToken(null, "Line-Highlight-Color-Token")

@@ -115,7 +115,7 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
             theme.getColor(ThemeToken.LINE_NUMBER_COLOR_TOKEN).hexColor
 
         painters.lineNumberBackgroundPainter.color =
-            theme.getColor(ThemeToken.BACKGROUND_COLOR_TOKEN).hexColor
+            theme.getColor(ThemeToken.LINE_NUMBER_BACKGROUND_COLOR_TOKEN).hexColor
 
         painters.lineNumberDividingLinePainter.color =
             theme.getColor(ThemeToken.LINE_NUMBER_DIVIDING_LINE_COLOR_TOKEN).hexColor
