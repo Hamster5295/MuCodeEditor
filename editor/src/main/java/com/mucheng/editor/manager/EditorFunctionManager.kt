@@ -68,6 +68,8 @@ open class EditorFunctionManager(editor: MuCodeEditor) :
     open var isCustomBackgroundEnabled = true
         protected set
 
+    open var isStickyLineNumberEnabled = true
+
     @InvalidateRequired
     fun setEditEnabled(isEditable: Boolean): EditorFunctionManager {
         this.isEditable = isEditable
@@ -141,6 +143,14 @@ open class EditorFunctionManager(editor: MuCodeEditor) :
         lineNumberEnabled: Boolean
     ): EditorFunctionManager {
         isLineNumberEnabled = lineNumberEnabled
+        return this
+    }
+
+    @InvalidateRequired
+    fun setStickyLineNumberEnabled(
+        stickyLineNumberEnabled: Boolean
+    ): EditorFunctionManager {
+        isLineNumberEnabled = stickyLineNumberEnabled
         return this
     }
 

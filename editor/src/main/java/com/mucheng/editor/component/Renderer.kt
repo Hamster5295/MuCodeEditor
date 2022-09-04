@@ -452,20 +452,23 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
         if (!editor.functionManager.isLineNumberEnabled) return
         val lineHeight = painters.getLineHeight()
         val reachLine = editor.getLastVisibleLine()
+        val scrollingOffsetX = editor.getOffsetX()
+        val realScrollingOffsetX =
+            if (!editor.functionManager.isStickyLineNumberEnabled) scrollingOffsetX.toFloat() else 0f
 
         canvas.drawRect(
+            -realScrollingOffsetX,
             0f,
-            0f,
-            painters.lineNumberPainter.measureText(reachLine.toString()) + margin * 2,
+            painters.lineNumberPainter.measureText(reachLine.toString()) + margin * 2 - realScrollingOffsetX,
             lineHeight * (1 + reachLine).toFloat(),
             painters.lineNumberBackgroundPainter
         )
 
         val newLeft = painters.lineNumberPainter.measureText(reachLine.toString()) + margin * 2
         canvas.drawRect(
-            newLeft,
+            newLeft - realScrollingOffsetX,
             0f,
-            newLeft + dividingLineWidth,
+            newLeft + dividingLineWidth - realScrollingOffsetX,
             lineHeight * (1 + reachLine).toFloat(),
             painters.lineNumberDividingLinePainter
         )
@@ -477,12 +480,16 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
         val reachLine = editor.getLastVisibleLine()
         val scrollingOffsetX = editor.getOffsetX()
         val scrollingOffsetY = editor.getOffsetY()
+
+        val realScrollingOffsetX =
+            if (!editor.functionManager.isStickyLineNumberEnabled) scrollingOffsetX.toFloat() else 0f
+
         while (workLine <= reachLine) {
             canvas.drawText(
 //                workLine.toString(), offsetX - scrollingOffsetX,
                 workLine.toString(), painters.lineNumberPainter.measureText(
                     reachLine.toString().drop(1)
-                ) + margin * 3,
+                ) + margin * 3 - realScrollingOffsetX,
                 (lineHeight * workLine).toFloat() - scrollingOffsetY,
                 painters.lineNumberPainter
             )
