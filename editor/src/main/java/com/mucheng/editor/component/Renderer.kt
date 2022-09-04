@@ -30,7 +30,6 @@ package com.mucheng.editor.component
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Paint
 import android.util.Log
 import com.mucheng.editor.base.AbstractComponent
 import com.mucheng.editor.base.AbstractTheme
@@ -79,8 +78,8 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
         remake()
         renderBackgroundColor(canvas)
         renderBackground(canvas)
-
         renderTextSelectHandleBackground(canvas)
+        renderLineHighlight(canvas)
         renderCodeText(canvas)
         renderTextSelectHandle(canvas)
         renderCursor(canvas)
@@ -117,8 +116,12 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
 
         painters.lineNumberBackgroundPainter.color =
             theme.getColor(ThemeToken.BACKGROUND_COLOR_TOKEN).hexColor
+
         painters.lineNumberDividingLinePainter.color =
             theme.getColor(ThemeToken.LINE_NUMBER_DIVIDING_LINE_COLOR_TOKEN).hexColor
+
+        painters.lineHighlightPainter.color =
+            theme.getColor(ThemeToken.LINE_HIGHLIGHT_COLOR_TOKEN).hexColor
 
         if (!editor.animationManager.cursorAnimation.isRunning()) {
             painters.cursorPainter.color = theme.getColor(ThemeToken.CURSOR_COLOR_TOKEN).hexColor
@@ -245,6 +248,19 @@ open class Renderer(editor: MuCodeEditor) : AbstractComponent(editor) {
             )
             ++workLine
         }
+    }
+
+    protected open fun renderLineHighlight(canvas: Canvas) {
+        val lineHeight = painters.getLineHeight()
+        val cursor: Cursor = editor.getCursor()
+        val offsetY = editor.getOffsetY()
+
+        val startX = 0f
+        val endX = editor.width.toFloat()
+        val startY = lineHeight * (cursor.line - 1).toFloat() - offsetY + margin
+        val endY = lineHeight * cursor.line.toFloat() - offsetY + margin
+
+        canvas.drawRect(startX, startY, endX, endY, painters.lineHighlightPainter)
     }
 
     protected open fun renderCodeText(canvas: Canvas) {

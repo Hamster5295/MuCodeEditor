@@ -65,6 +65,8 @@ open class Painters(editor: MuCodeEditor) : AbstractComponent(editor) {
     open val lineNumberBackgroundPainter = Paint()
     open val lineNumberDividingLinePainter = Paint()
 
+    open val lineHighlightPainter = Paint()
+
     open val codeTextPainter = Paint().apply {
         textSize = 19.sp
         letterSpacing = 0.04f

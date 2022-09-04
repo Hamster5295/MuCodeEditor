@@ -65,6 +65,9 @@ open class ThemeData {
             //行号分界线颜色
             put(ThemeToken.LINE_NUMBER_DIVIDING_LINE_COLOR_TOKEN, Color("#FF6699FF"))
 
+            //光标所在行颜色
+            put(ThemeToken.LINE_HIGHLIGHT_COLOR_TOKEN, Color("#99CCCCCC"))
+
             // 选中文本的背景色
             put(
                 com.mucheng.editor.token.ThemeToken.TEXT_SELECT_HANDLE_BACKGROUND_COLOR_TOKEN,
@@ -110,6 +113,9 @@ open class ThemeData {
 
             //行号分界线颜色
             put(ThemeToken.LINE_NUMBER_DIVIDING_LINE_COLOR_TOKEN, Color("#FFFFFFFF"))
+
+            put(ThemeToken.LINE_HIGHLIGHT_COLOR_TOKEN, Color("#99CCCCCC"))
+
 
             // 选中文本的背景色
             put(
